@@ -2,8 +2,6 @@
 
 const input = require("readline-sync");
 
-// let word = "";
-
 const oldPointStructure = {
   1: ["A", "E", "I", "O", "U", "L", "N", "R", "S", "T"],
   2: ["D", "G"],
@@ -13,7 +11,7 @@ const oldPointStructure = {
   8: ["J", "X"],
   10: ["Q", "Z"],
 };
-let newPointStructure = {};
+let newPointStructure = transform(oldPointStructure);
 
 function oldScrabbleScorer(word) {
   word = word.toUpperCase();
@@ -35,7 +33,7 @@ function oldScrabbleScorer(word) {
 
 function initialPrompt() {
   console.log("Let's play some scrabble!");
-  word = input.question("Enter a word to score: ");
+  return input.question("Enter a word to score: ");
 }
 
 let simpleScorer = function (word) {
@@ -64,17 +62,15 @@ let vowelBonusScorer = function (word) {
 };
 
 let scrabbleScorer = function (word) {
-  word = word.toUpperCase();
-  transform(word);
+  word = word.toLowerCase();
   let score = 0;
-  for (const key in newPointStructure) {
-    for (let i = 0; i < word.length; i++) {
-      if (newPointStructure.key === word[i]) {
-        score += word[i].newPointStructure[key];
-      }
-      return score;
-    }
+
+  for (let i = 0; i < word.length; i++) {
+    let letterPoints = newPointStructure[word[i]];
+    score += letterPoints;
   }
+
+  return score;
 };
 
 const simpleScoreObject = {
@@ -107,15 +103,13 @@ const scoringAlgorithms = [
   newScrabbleScorerObject,
 ];
 
-function scorerPrompt() {
+function scorerPrompt(word) {
   console.log("Which scoring algorithm would you like to use?");
   console.log("0 - Simple: One point per character");
   console.log("1 - Vowel Bonus: Vowels are worth 3 points");
   console.log("2 - New Scrabble: Uses new scrabble point system");
 
   let userScorerSelection = input.question("Enter 0, 1, or 2:  ");
-  // let userScorerSelection = input.question("Enter 0, 1, or 2:  ");
-  // for (let i= 0; i < scoringAlgorithms.length; i++) {
 
   console.log("algorithm name: ", scoringAlgorithms[userScorerSelection].name);
   console.log(
@@ -124,39 +118,22 @@ function scorerPrompt() {
   );
 }
 
-// 1. Take the user input in userScorerSelection
-// 2. Select one element from scoringAlgorithms array using user's input.
-
-//  score += scoringAlgorithms[0].ScorerFunction(word);
-
-// scorerPrompt();
 function transform(oldPointStructure) {
+  let newObject = {};
   for (const property in oldPointStructure) {
-    // newKeysArr = [oldPointStructure[property].push];
-
     for (let i = 0; i < oldPointStructure[property].length; i++) {
-      newPointStructure[oldPointStructure[property][i].toLowerCase()] =
+      newObject[oldPointStructure[property][i].toLowerCase()] =
         Number(property);
     }
   }
-  return newPointStructure;
+  return newObject;
 }
-// transform(oldPointStructure);
-
-// console.log(`Key: ${key}, Value: ${oldObject[key]}`);
-//    }
-//  return oldObject;
 
 function runProgram() {
-  initialPrompt();
+  let word = initialPrompt();
   scorerPrompt(word);
 
   console.log(newPointStructure);
-  // console.log(Number(newPointStructure.c) + Number(newPointStructure.a));
-
-  // // - Instead of setting up word as a global variable in line 5, you should return it
-  // from your initialPrompt() function and pass the value to scorerPrompt().
-  // Take another look at the "Function Input and Output" section in Chapter 10.
 }
 
 // Don't write any code below this line //
